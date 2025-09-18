@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: redis-config
+  namespace: redis-new
 data:
   redis.conf: |
     # Redis configuration file example.
@@ -2287,4 +2288,5 @@ data:
     # by setting the following config which takes a space delimited list of warnings
     # to suppress
     #
+
     # ignore-warnings ARM64-COW-BUG
