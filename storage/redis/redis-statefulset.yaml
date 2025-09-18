@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: redis
+  namespace: redis-new
 spec:
   serviceName: redis
   replicas: 3
@@ -105,3 +106,4 @@ spec:
       protocol: TCP
       port: 6379
       targetPort: 6379
+
