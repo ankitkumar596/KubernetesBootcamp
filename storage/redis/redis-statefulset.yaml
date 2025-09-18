@@ -75,17 +75,33 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
+  name: redis-master
   namespace: redis-new
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
   #loadBalancerIP: 10.3.8.121
+  selector:
+    statefulset.kubernetes.io/pod-name: redis-0
   ports:
     - name: redis
       protocol: TCP
       port: 6379
       targetPort: 6379
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-replicas
+  namespace: redis-new
+spec:
+  type: ClusterIP
   selector:
     app: redis
+  ports:
+    - name: redis
+      protocol: TCP
+      port: 6379
+      targetPort: 6379
