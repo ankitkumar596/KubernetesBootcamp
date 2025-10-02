@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-sentinel-config
+  namespace: redis-ha
+data:
+  sentinel.conf: |
+    port 26379
+    sentinel monitor redis-0 redis-0.redis-headless.redis-ha.svc.cluster.local 6379 2
+    sentinel down-after-milliseconds redis-0 5000
+    sentinel parallel-syncs redis-0 1
+    sentinel failover-timeout redis-0 60000
+    dir /data
+    # requirepass and sentinel auth-pass can be passed via CLI args/env if required

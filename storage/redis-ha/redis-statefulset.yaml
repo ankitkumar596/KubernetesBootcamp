@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  namespace: redis-ha
+spec:
+  serviceName: redis-headless-svc
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:8.0.2
+        args:
+          - redis-server
+          - /redis-conf/redis.conf
+          - --requirepass
+          - "$(REDIS_PASSWORD)"
+        env:
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: redis-password
+        ports:
+          - containerPort: 6379
+            name: redis
+        volumeMounts:
+          - name: data
+            mountPath: /data
+          - name: config
+            mountPath: /redis-conf
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - "redis-cli -a \"$REDIS_PASSWORD\" ping | grep -q PONG"
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - "redis-cli -a \"$REDIS_PASSWORD\" ping | grep -q PONG"
+          initialDelaySeconds: 30
+          periodSeconds: 20
+      volumes:
+        - name: config
+          configMap:
+            name: redis-config
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: 10Gi
