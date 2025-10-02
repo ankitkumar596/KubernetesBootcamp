@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-client-svc
+  name: redis-client
   namespace: redis-ha
 spec:
   selector:

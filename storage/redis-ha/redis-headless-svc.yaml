@@ -1,14 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-headless-svc
+  name: redis-headless
   namespace: redis-ha
-  labels:
-    app: redis
 spec:
   clusterIP: None
-  selector:
-    app: redis
   ports:
     - port: 6379
       name: redis
+  selector:
+    app: redis

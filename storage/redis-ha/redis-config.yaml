@@ -16,4 +16,4 @@ data:
     save 300 10
     save 60 10000
     dir /data
-    # requirepass will be supplied via command-line in container env
+    requirepass __REDIS_PASSWORD__   # placeholder
