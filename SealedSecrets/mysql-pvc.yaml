@@ -8,7 +8,3 @@ spec:
   resources:
     requests:
       storage: 5Gi
-
-
-
-kubeseal --format=yaml --cert=public-cert.pem < db-credentials.yaml > sealed-db-credentials.yaml
